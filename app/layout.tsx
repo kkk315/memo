@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
+import Breadcrumb from "./components/Breadcrumb";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,9 +25,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <header className="site-header">
+          <div className="header-inner">
+            <Link href="/" className="site-title">
+              My Blog
+            </Link>
+            <nav className="site-nav">
+              <Link href="/">カテゴリ一覧</Link>
+            </nav>
+          </div>
+        </header>
+        <div className="site-main-wrapper">
+          <aside className="site-sidebar">
+            <nav>
+              <ul>
+                <li>
+                  <Link href="/">ホーム</Link>
+                </li>
+                {/* カテゴリ一覧などをここに追加可能 */}
+              </ul>
+            </nav>
+          </aside>
+          <main className="site-main">
+            <Breadcrumb />
+            {children}
+          </main>
+        </div>
+        <footer className="site-footer">
+          <div className="footer-inner">© 2025 My Blog</div>
+        </footer>
       </body>
     </html>
   );
