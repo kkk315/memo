@@ -30,7 +30,13 @@ type ArticleData = {
 };
 
 const getArticle = async (category: string, article: string): Promise<ArticleData> => {
-  const articlePath = path.join(process.cwd(), 'content', category, article, 'index.md');
+  const articlePath = path.join(
+    process.cwd(),
+    'content',
+    decodeURIComponent(category),
+    decodeURIComponent(article),
+    'index.md'
+  );
   const file = await fs.readFile(articlePath, 'utf8');
   const { content, data } = matter(file);
   return { content, data };

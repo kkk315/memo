@@ -11,3 +11,4 @@ update: 2025-07-14
 ```js
 console.log('Article 1');
 ```
+[article-2](article-2)

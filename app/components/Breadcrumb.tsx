@@ -8,7 +8,7 @@ export default function Breadcrumb() {
   const crumbs = [
     { name: "ホーム", href: "/" },
     ...segments.map((seg, i) => ({
-      name: seg,
+      name: decodeURIComponent(seg),
       href: "/" + segments.slice(0, i + 1).join("/")
     }))
   ];
