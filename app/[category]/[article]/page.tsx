@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
@@ -103,7 +103,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
         <div className="article-date">投稿日: {created}</div>
         <div className="article-updated">編集日: {updated}</div>
       </div>
-      <ArticleBody htmlPages={htmlPages} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ArticleBody htmlPages={htmlPages} />
+      </Suspense>
     </article>
   );
 }
@@ -111,7 +113,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
 export async function generateStaticParams() {
   const contentPath = path.join(process.cwd(), 'content');
   const categories = await fs.readdir(contentPath);
-  const params: { params: { category: string; article: string } }[] = [];
+  const params: { category: string; article: string }[] = [];
   for (const category of categories) {
     const categoryPath = path.join(contentPath, category);
     const stat = await fs.stat(categoryPath);
@@ -121,11 +123,9 @@ export async function generateStaticParams() {
       const articlePath = path.join(categoryPath, article);
       const statA = await fs.stat(articlePath);
       if (!statA.isDirectory()) continue;
-      params.push({ params: { category, article } });
+      params.push({ category, article });
     }
   }
-  return [
-    { params: { category: 'sample-category', article: 'sample-article' } }
-  ];
+  return params;
 }
 

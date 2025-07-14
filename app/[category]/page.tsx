@@ -1,8 +1,10 @@
+
 import Link from 'next/link';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 
+// SSG用: generateStaticParams（ファイル先頭に移動）
 export default async function CategoryArticlesPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
   const decodedCategory = decodeURIComponent(category);
@@ -34,4 +36,17 @@ export default async function CategoryArticlesPage({ params }: { params: Promise
       <Link href="/">← カテゴリ一覧へ戻る</Link>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const contentPath = path.join(process.cwd(), 'content');
+  const categories = await fs.readdir(contentPath);
+  const params: { category: string }[] = [];
+  for (const category of categories) {
+    const categoryPath = path.join(contentPath, category);
+    const stat = await fs.stat(categoryPath);
+    if (!stat.isDirectory()) continue;
+    params.push({ category });
+  }
+  return params;
 }
