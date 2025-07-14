@@ -30,7 +30,7 @@ export default function RootLayout({
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="site-title">
-              My Blog
+              技術メモ
             </Link>
             <nav className="site-nav">
               <Link href="/">カテゴリ一覧</Link>

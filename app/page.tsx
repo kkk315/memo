@@ -13,9 +13,6 @@ export default async function CategoryPage() {
 
   return (
     <main>
-      <nav className="breadcrumb">
-        <Link href="/">ホーム</Link>
-      </nav>
       <h1>カテゴリ一覧</h1>
       <ul>
         {categories.map((category) => (
