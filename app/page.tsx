@@ -1,13 +1,21 @@
 import Link from 'next/link';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
-export default function CategoryPage() {
+export default async function CategoryPage() {
   const contentPath = path.join(process.cwd(), 'content');
-  const categories = fs.readdirSync(contentPath).filter((name) => fs.lstatSync(path.join(contentPath, name)).isDirectory());
+  const names = await fs.readdir(contentPath);
+  const categories: string[] = [];
+  for (const name of names) {
+    const stat = await fs.stat(path.join(contentPath, name));
+    if (stat.isDirectory()) categories.push(name);
+  }
 
   return (
     <main>
+      <nav className="breadcrumb">
+        <Link href="/">ホーム</Link>
+      </nav>
       <h1>カテゴリ一覧</h1>
       <ul>
         {categories.map((category) => (

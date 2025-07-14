@@ -9,6 +9,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import type { JSX } from 'react';
 import Mermaid from '../../components/Mermaid';
+import ArticleBody from '../../components/ArticleBody';
 
 // 記事のパスを取得（非同期化）
 const getArticlePaths = async (category: string): Promise<string[]> => {
@@ -74,8 +75,6 @@ function getComponents(category: string, article: string): MDXRemoteProps['compo
 export default async function ArticlePage({ params }: { params: Promise<{ category: string; article: string }> }) {
   const { category, article } = await params;
   const { content, data } = await getArticle(category, article);
-  // 日付を文字列として表示
-  // 日付をyyyy/mm/dd形式で表示
   function formatDate(str?: string) {
     if (!str) return '不明';
     const d = new Date(str);
@@ -84,13 +83,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
   }
   const created = formatDate(data.date);
   const updated = formatDate(data.update ?? data.date);
+  // [---]で分割し、各ページをMDXRemoteでHTML化（keyを付与）
+  const pages = content.split('[---]');
+  const htmlPages: React.ReactNode[] = [];
+  for (let idx = 0; idx < pages.length; idx++) {
+    const mdx = await MDXRemote({ source: pages[idx], components: getComponents(category, article) });
+    htmlPages.push(<React.Fragment key={idx}>{mdx}</React.Fragment>);
+  }
   return (
     <article>
+      <h1>{data.title}</h1>
       <div className="article-meta">
         <div className="article-date">投稿日: {created}</div>
         <div className="article-updated">編集日: {updated}</div>
       </div>
-      <MDXRemote source={content} components={getComponents(category, article)} />
+      <ArticleBody htmlPages={htmlPages} />
     </article>
   );
 }
