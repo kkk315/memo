@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -10,10 +10,16 @@ import { atomOneDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import type { JSX } from 'react';
 import Mermaid from '../../components/Mermaid';
 
-// 記事のパスを取得
-const getArticlePaths = (category: string): string[] => {
+// 記事のパスを取得（非同期化）
+const getArticlePaths = async (category: string): Promise<string[]> => {
   const categoryPath = path.join(process.cwd(), 'content', category);
-  return fs.readdirSync(categoryPath).filter((name) => fs.lstatSync(path.join(categoryPath, name)).isDirectory());
+  const names = await fs.readdir(categoryPath);
+  const dirs: string[] = [];
+  for (const name of names) {
+    const stat = await fs.stat(path.join(categoryPath, name));
+    if (stat.isDirectory()) dirs.push(name);
+  }
+  return dirs;
 };
 
 // 記事データ取得
@@ -21,9 +27,10 @@ type ArticleData = {
   content: string;
   data: Record<string, any>;
 };
-const getArticle = (category: string, article: string): ArticleData => {
+
+const getArticle = async (category: string, article: string): Promise<ArticleData> => {
   const articlePath = path.join(process.cwd(), 'content', category, article, 'index.md');
-  const file = fs.readFileSync(articlePath, 'utf8');
+  const file = await fs.readFile(articlePath, 'utf8');
   const { content, data } = matter(file);
   return { content, data };
 };
@@ -64,21 +71,35 @@ function getComponents(category: string, article: string): MDXRemoteProps['compo
   };
 }
 
-export type PageProps = {
-  params: {
-    category: string;
-    article: string;
-  };
-};
-
-const ArticlePage = async ({ params }: PageProps): Promise<JSX.Element> => {
-  const { content, data } = getArticle(params.category, params.article);
+export default async function ArticlePage({ params }: { params: Promise<{ category: string; article: string }> }) {
+  const { category, article } = await params;
+  const { content, data } = await getArticle(category, article);
   return (
     <article>
       <h1>{data.title}</h1>
-      <MDXRemote source={content} components={getComponents(params.category, params.article)} />
+      <MDXRemote source={content} components={getComponents(category, article)} />
     </article>
   );
-};
+}
+// SSG用: generateStaticParams
+export async function generateStaticParams() {
+  const contentPath = path.join(process.cwd(), 'content');
+  const categories = await fs.readdir(contentPath);
+  const params: { params: { category: string; article: string } }[] = [];
+  for (const category of categories) {
+    const categoryPath = path.join(contentPath, category);
+    const stat = await fs.stat(categoryPath);
+    if (!stat.isDirectory()) continue;
+    const articles = await fs.readdir(categoryPath);
+    for (const article of articles) {
+      const articlePath = path.join(categoryPath, article);
+      const statA = await fs.stat(articlePath);
+      if (!statA.isDirectory()) continue;
+      params.push({ params: { category, article } });
+    }
+  }
+  return [
+    { params: { category: 'sample-category', article: 'sample-article' } }
+  ];
+}
 
-export default ArticlePage;

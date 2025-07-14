@@ -1,18 +1,23 @@
 import Link from 'next/link';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
-export default function CategoryArticlesPage({ params }: { params: { category: string } }) {
-  const categoryPath = path.join(process.cwd(), 'content', params.category);
-  const articles = fs.readdirSync(categoryPath).filter((name) => fs.lstatSync(path.join(categoryPath, name)).isDirectory());
-
+export default async function CategoryArticlesPage({ params }: { params: Promise<{ category: string }> }) {
+  const { category } = await params;
+  const categoryPath = path.join(process.cwd(), 'content', category);
+  const names = await fs.readdir(categoryPath);
+  const articles: string[] = [];
+  for (const name of names) {
+    const stat = await fs.stat(path.join(categoryPath, name));
+    if (stat.isDirectory()) articles.push(name);
+  }
   return (
     <main>
-      <h1>{params.category} の記事一覧</h1>
+      <h1>{category} の記事一覧</h1>
       <ul>
         {articles.map((article) => (
           <li key={article}>
-            <Link href={`/${params.category}/${article}`}>{article}</Link>
+            <Link href={`/${category}/${article}`}>{article}</Link>
           </li>
         ))}
       </ul>
