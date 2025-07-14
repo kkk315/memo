@@ -1,24 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Markdown Blog with Next.js
+
+Next.js 15 App Router を使用したSSG対応Markdownブログサイトです。
+
+## 機能
+
+- 📝 Markdownファイルから静的サイト生成
+- 🎨 Mermaidグラフの埋め込み対応
+- 🖼️ 画像の自動配信（API Route経由）
+- 🌏 日本語カテゴリ・記事名対応
+- 📄 ページネーション機能
+- 🍞 パンくずリスト
+- 💻 シンタックスハイライト（Prism.js）
+- 🔧 TypeScript + ESLint設定
+
+## 技術スタック
+
+- **Framework**: Next.js 15.3.5 (App Router)
+- **Language**: TypeScript
+- **Styling**: CSS
+- **Markdown**: gray-matter + next-mdx-remote
+- **Code Highlight**: react-syntax-highlighter
+- **Graphs**: Mermaid.js
+- **Deployment**: GitHub Actions + GitHub Pages
 
 ## Getting Started
 
 First, run the development server:
 
 ```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバー起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 開発コマンド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# ビルド
+npm run build
+
+# 型チェック
+npx tsc --noEmit
+
+# ESLint
+npm run lint
+```
+
+## ディレクトリ構造
+
+```
+content/
+├── カテゴリ名/
+│   ├── 記事名/
+│   │   ├── index.md
+│   │   └── 画像ファイル
+│   └── ...
+└── ...
+```
+
+## 記事の作成
+
+1. `content/` 以下にカテゴリフォルダを作成
+2. カテゴリ内に記事フォルダを作成
+3. `index.md` ファイルを作成し、フロントマターを記述：
+
+```markdown
+---
+title: "記事タイトル"
+date: "2025-01-01"
+update: "2025-01-02"
+---
+
+記事の内容...
+
+[---]
+
+ページ2の内容...
+```
+
+## デプロイ
+
+GitHub Actionsによりmainブランチへのpushで自動デプロイされます。
 
 ## Learn More
 
