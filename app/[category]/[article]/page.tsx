@@ -74,9 +74,22 @@ function getComponents(category: string, article: string): MDXRemoteProps['compo
 export default async function ArticlePage({ params }: { params: Promise<{ category: string; article: string }> }) {
   const { category, article } = await params;
   const { content, data } = await getArticle(category, article);
+  // 日付を文字列として表示
+  // 日付をyyyy/mm/dd形式で表示
+  function formatDate(str?: string) {
+    if (!str) return '不明';
+    const d = new Date(str);
+    if (isNaN(d.getTime())) return str;
+    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+  }
+  const created = formatDate(data.date);
+  const updated = formatDate(data.update ?? data.date);
   return (
     <article>
-      <h1>{data.title}</h1>
+      <div className="article-meta">
+        <div className="article-date">投稿日: {created}</div>
+        <div className="article-updated">編集日: {updated}</div>
+      </div>
       <MDXRemote source={content} components={getComponents(category, article)} />
     </article>
   );
