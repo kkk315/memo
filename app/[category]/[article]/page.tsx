@@ -7,26 +7,18 @@ import React, { Suspense } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import type { JSX } from 'react';
 import Mermaid from '../../components/Mermaid';
 import ArticleBody from '../../components/ArticleBody';
-
-// 記事のパスを取得（非同期化）
-const getArticlePaths = async (category: string): Promise<string[]> => {
-  const categoryPath = path.join(process.cwd(), 'content', category);
-  const names = await fs.readdir(categoryPath);
-  const dirs: string[] = [];
-  for (const name of names) {
-    const stat = await fs.stat(path.join(categoryPath, name));
-    if (stat.isDirectory()) dirs.push(name);
-  }
-  return dirs;
-};
 
 // 記事データ取得
 type ArticleData = {
   content: string;
-  data: Record<string, any>;
+  data: {
+    title?: string;
+    date?: string;
+    update?: string;
+    [key: string]: unknown;
+  };
 };
 
 const getArticle = async (category: string, article: string): Promise<ArticleData> => {

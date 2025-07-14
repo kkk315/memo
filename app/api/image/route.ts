@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse(image, {
       headers: { 'Content-Type': type }
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 }

@@ -12,10 +12,21 @@ const Mermaid: React.FC<MermaidProps> = ({ children }) => {
   useEffect(() => {
     if (ref.current) {
       mermaid.initialize({ startOnLoad: true });
-      // 型アサーションで型エラーを回避
-      (mermaid.render as any)('mermaid-graph', children).then((res: { svg: string }) => {
-        if (ref.current) ref.current.innerHTML = res.svg;
-      });
+      // mermaidのrender関数を適切に型定義
+      const renderMermaid = async () => {
+        try {
+          const { svg } = await mermaid.render('mermaid-graph', children);
+          if (ref.current) {
+            ref.current.innerHTML = svg;
+          }
+        } catch (error) {
+          console.error('Mermaid rendering error:', error);
+          if (ref.current) {
+            ref.current.innerHTML = '<p>Mermaid chart could not be rendered</p>';
+          }
+        }
+      };
+      renderMermaid();
     }
   }, [children]);
 
