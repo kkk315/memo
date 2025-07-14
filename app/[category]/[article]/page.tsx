@@ -45,11 +45,24 @@ const Code: React.FC<CodeProps> = ({ className, children }) => {
   );
 };
 
-// Mermaid用コンポーネント
-const components: MDXRemoteProps['components'] = {
-  code: Code,
-  mermaid: Mermaid,
+// 画像タグをAPI経由に変換するコンポーネント
+type ImgProps = { src: string; alt?: string; category: string; article: string };
+const Img: React.FC<ImgProps> = ({ src, alt, category, article }) => {
+  const isLocal = src && !src.startsWith('http') && !src.startsWith('/');
+  const apiSrc = isLocal
+    ? `/api/image?category=${encodeURIComponent(category)}&article=${encodeURIComponent(article)}&name=${encodeURIComponent(src)}`
+    : src;
+  return <img src={apiSrc} alt={alt ?? ''} />;
 };
+
+// Mermaid用コンポーネント
+function getComponents(category: string, article: string): MDXRemoteProps['components'] {
+  return {
+    code: Code,
+    mermaid: Mermaid,
+    img: (props: { src: string; alt?: string }) => <Img {...props} category={category} article={article} />,
+  };
+}
 
 export type PageProps = {
   params: {
@@ -63,7 +76,7 @@ const ArticlePage = async ({ params }: PageProps): Promise<JSX.Element> => {
   return (
     <article>
       <h1>{data.title}</h1>
-      <MDXRemote source={content} components={components} />
+      <MDXRemote source={content} components={getComponents(params.category, params.article)} />
     </article>
   );
 };

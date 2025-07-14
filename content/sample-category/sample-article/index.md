@@ -17,5 +17,6 @@ graph TD;
   B-->D;
   C-->D;
 ```
+![alt text](image.png)
 
 画像もこのフォルダに格納できます。
