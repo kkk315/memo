@@ -104,8 +104,6 @@ export default async function CategoriesPage() {
     }
   };
 
-  const totalArticles = sortedCategories.reduce((sum, cat) => sum + cat.articleCount, 0);
-
   return (
     <main className={styles.main}>
       {sortedCategories.length > 0 ? (

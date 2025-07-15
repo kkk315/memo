@@ -107,15 +107,8 @@ function getComponents(category: string, article: string): MDXRemoteProps['compo
 
 export default async function ArticlePage({ params }: { params: Promise<{ category: string; article: string }> }) {
   const { category, article } = await params;
-  const { content, data } = await getArticle(category, article);
-  function formatDate(str?: string) {
-    if (!str) return '不明';
-    const d = new Date(str);
-    if (isNaN(d.getTime())) return str;
-    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
-  }
-  const created = formatDate(data.date);
-  const updated = formatDate(data.update ?? data.date);
+  const { content } = await getArticle(category, article);
+  
   // [---]で分割し、各ページをMDXRemoteでHTML化（keyを付与）
   const pages = content.split('[---]');
   const htmlPages: React.ReactNode[] = [];
