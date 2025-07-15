@@ -3,10 +3,11 @@ import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
+import type { Metadata, Viewport } from 'next';
 import React, { Suspense } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { atomOneDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from '../../components/Mermaid';
 import ArticleBody from '../../components/ArticleBody';
 
@@ -39,16 +40,42 @@ type CodeProps = {
   className?: string;
   children: string;
 };
+
+type PreProps = {
+  children: React.ReactNode;
+};
+
 const Code: React.FC<CodeProps> = ({ className, children }) => {
   const language = className?.replace('language-', '') || '';
+  
   if (language === 'mermaid') {
     return <Mermaid>{children}</Mermaid>;
   }
   return (
-    <SyntaxHighlighter style={atomOneDark} language={language} PreTag="div">
+    <SyntaxHighlighter 
+      style={atomOneLight} 
+      language={language} 
+      PreTag="div"
+      showLineNumbers={true}
+    >
       {children}
     </SyntaxHighlighter>
   );
+};
+
+const Pre: React.FC<PreProps> = ({ children }) => {
+  // code要素をチェック
+  if (React.isValidElement(children) && children.type === 'code') {
+    const codeProps = children.props as CodeProps;
+    const className = codeProps.className || '';
+    const language = className.replace('language-', '') || '';
+    
+    if (language === 'mermaid') {
+      return <Mermaid>{codeProps.children}</Mermaid>;
+    }
+  }
+  
+  return <pre>{children}</pre>;
 };
 
 // 画像タグをAPI経由に変換するコンポーネント
@@ -63,11 +90,13 @@ const Img: React.FC<ImgProps> = ({ src, alt, category, article }) => {
 
 // Mermaid用コンポーネント
 function getComponents(category: string, article: string): MDXRemoteProps['components'] {
-  return {
+  const components = {
     code: Code,
+    pre: Pre,
     mermaid: Mermaid,
     img: (props: { src: string; alt?: string }) => <Img {...props} category={category} article={article} />,
   };
+  return components;
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ category: string; article: string }> }) {
@@ -90,14 +119,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
   }
   return (
     <article>
-      <h1>{data.title}</h1>
-      <div className="article-meta">
-        <div className="article-date">投稿日: {created}</div>
-        <div className="article-updated">編集日: {updated}</div>
+      <header className="article-header">
+        <h1>{data.title}</h1>
+        <div className="article-meta">
+          <div className="article-meta-grid">
+            <div className="article-date">
+              📅 投稿日: {created}
+            </div>
+            <div className="article-updated">
+              🔄 更新日: {updated}
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <div className="article-content">
+        <Suspense fallback={<div className="loading-spinner">🔄 記事を読み込んでいます...</div>}>
+          <ArticleBody htmlPages={htmlPages} />
+        </Suspense>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ArticleBody htmlPages={htmlPages} />
-      </Suspense>
     </article>
   );
 }
@@ -120,4 +160,48 @@ export async function generateStaticParams() {
   }
   return params;
 }
+
+// メタデータ生成
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string; article: string }>;
+}): Promise<Metadata> {
+  const { category, article } = await params;
+  
+  try {
+    const { data } = await getArticle(category, article);
+    const title = data.title ? `${data.title} | Tech Blog` : 'Tech Blog';
+    const description = (data.description as string) || `${decodeURIComponent(category)}カテゴリの技術記事`;
+    
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: 'article',
+        publishedTime: data.date as string,
+        modifiedTime: (data.update as string) || (data.date as string),
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+      },
+    };
+  } catch {
+    return {
+      title: 'Tech Blog',
+      description: '技術ブログ',
+    };
+  }
+}
+
+// Viewport設定
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
 
