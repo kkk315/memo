@@ -78,14 +78,18 @@ const Pre: React.FC<PreProps> = ({ children }) => {
   return <pre>{children}</pre>;
 };
 
-// 画像タグをAPI経由に変換するコンポーネント
+// 画像タグを静的パスに変換するコンポーネント
 type ImgProps = { src: string; alt?: string; category: string; article: string };
 const Img: React.FC<ImgProps> = ({ src, alt, category, article }) => {
   const isLocal = src && !src.startsWith('http') && !src.startsWith('/');
-  const apiSrc = isLocal
-    ? `/api/image?category=${encodeURIComponent(category)}&article=${encodeURIComponent(article)}&name=${encodeURIComponent(src)}`
-    : src;
-  return <img src={apiSrc} alt={alt ?? ''} />;
+  
+  let finalSrc = src;
+  if (isLocal) {
+    // SSG時は /content-images/ パスを使用
+    finalSrc = `/content-images/${encodeURIComponent(category)}/${encodeURIComponent(article)}/${encodeURIComponent(src)}`;
+  }
+  
+  return <img src={finalSrc} alt={alt ?? ''} />;
 };
 
 // Mermaid用コンポーネント

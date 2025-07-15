@@ -32,5 +32,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 }
-
-export const dynamic = "error";
