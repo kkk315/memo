@@ -12,7 +12,7 @@
     "@types/mermaid": "^9.1.0",
     "gray-matter": "^4.0.3",
     "mermaid": "^11.8.1",
-    "next": "^15.3.5",
+    "next": "^15.4.1",
     "next-mdx-remote": "^5.0.0",
     "prismjs": ">=1.30.0",
     "react": "^19.1.0",
