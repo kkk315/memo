@@ -1,36 +1,101 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
-import mermaid from 'mermaid';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface MermaidProps {
   children: string;
 }
 
 const Mermaid: React.FC<MermaidProps> = ({ children }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (ref.current) {
-      mermaid.initialize({ startOnLoad: true });
-      // mermaidのrender関数を適切に型定義
-      const renderMermaid = async () => {
-        try {
-          const { svg } = await mermaid.render('mermaid-graph', children);
-          if (ref.current) {
-            ref.current.innerHTML = svg;
-          }
-        } catch (error) {
-          console.error('Mermaid rendering error:', error);
-          if (ref.current) {
-            ref.current.innerHTML = '<p>Mermaid chart could not be rendered</p>';
-          }
-        }
-      };
-      renderMermaid();
-    }
-  }, [children]);
+    let mounted = true;
 
-  return <div ref={ref} />;
+    const initMermaid = async () => {
+      if (!elementRef.current || !mounted) return;
+
+      try {
+        elementRef.current.innerHTML = '';
+        
+        const mermaid = (await import('mermaid')).default;
+        const id = `mermaid-${Date.now()}`;
+
+        // Mermaidを初期化（一度だけ）
+        if (!isInitialized) {
+          mermaid.initialize({
+            startOnLoad: false
+          });
+          setIsInitialized(true);
+        }
+
+        const cleanedContent = children.trim();
+        if (!cleanedContent) {
+          throw new Error('Empty content');
+        }
+
+        const { svg, bindFunctions } = await mermaid.render(id, cleanedContent);
+
+        if (elementRef.current && mounted) {
+          elementRef.current.innerHTML = svg;
+          
+          if (bindFunctions) {
+            bindFunctions(elementRef.current);
+          }
+          
+          setError(null);
+        }
+
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Error';
+        setError(errorMessage);
+
+        if (elementRef.current && mounted) {
+          elementRef.current.innerHTML = `
+            <div style="
+              border: 2px dashed #ff6b6b;
+              padding: 20px;
+              border-radius: 8px;
+              background: #ffe0e0;
+              color: #d63031;
+              text-align: center;
+            ">
+              <h4>Error</h4>
+              <p>${errorMessage}</p>
+            </div>
+          `;
+        }
+      }
+    };
+
+    initMermaid();
+
+    return () => {
+      mounted = false;
+    };
+  }, [children, isInitialized]);
+
+  return (
+    <div className="mermaid-container">
+      <div
+        ref={elementRef}
+        style={{
+          minHeight: '100px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center'
+        }}
+      >
+        {!error && (
+          <div style={{ color: '#6c757d', fontSize: '14px' }}>
+            � Loading Mermaid chart...
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Mermaid;
