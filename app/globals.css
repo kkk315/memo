@@ -169,11 +169,6 @@ pre code {
   gap: var(--spacing-sm);
 }
 
-.site-title::before {
-  content: '⚡';
-  font-size: var(--text-xl);
-}
-
 .site-nav {
   display: flex;
   gap: var(--spacing-lg);

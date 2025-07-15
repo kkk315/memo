@@ -1,4 +1,4 @@
-# Markdown Blog with Next.js
+# mkazu 技術メモ
 
 Next.js 15 App Router を使用したSSG対応Markdownブログサイトです。
 

@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import type { Metadata, Viewport } from 'next';
+import { siteConfig } from '../lib/site-config';
 
 // 記事の型定義
 type Article = {
@@ -23,25 +24,24 @@ export default async function HomePage() {
     displayName: string;
     description: string;
     articleCount: number;
-    icon: string;
   }> = [];
 
-  // カテゴリ情報の設定
-  const categoryConfig: Record<string, { displayName: string; description: string; icon: string }> = {
-    'sample-category': {
-      displayName: 'サンプルカテゴリ',
-      description: 'サンプル記事とデモンストレーション用のコンテンツを収録しています。',
-      icon: '📝'
-    },
-    'test': {
-      displayName: 'テスト',
-      description: '実験的な機能やテスト用のコンテンツを掲載しています。',
-      icon: '🧪'
-    },
-    'てすと': {
-      displayName: '日本語テスト',
-      description: '日本語URLのテストと国際化対応のサンプルです。',
-      icon: '🗾'
+  // カテゴリのメタデータを読み込む関数
+  const getCategoryMetadata = async (categoryName: string) => {
+    const metadataPath = path.join(contentPath, categoryName, 'metadata.md');
+    try {
+      const metadataContent = await fs.readFile(metadataPath, 'utf8');
+      const { data } = matter(metadataContent);
+      return {
+        displayName: categoryName,
+        description: data.description || siteConfig.ui.defaultCategoryDescription
+      };
+    } catch {
+      // metadata.mdがない場合はデフォルト値を返す
+      return {
+        displayName: categoryName,
+        description: siteConfig.ui.defaultCategoryDescription
+      };
     }
   };
 
@@ -67,11 +67,7 @@ export default async function HomePage() {
             const fileContent = await fs.readFile(indexPath, 'utf8');
             const { data } = matter(fileContent);
             
-            const config = categoryConfig[name] || {
-              displayName: name,
-              description: 'このカテゴリの記事一覧です。',
-              icon: '📚'
-            };
+            const config = await getCategoryMetadata(name);
             
             allArticles.push({
               category: name,
@@ -105,18 +101,13 @@ export default async function HomePage() {
       const categoryArticles = allArticles.filter(article => article.category === name);
       const articleCount = categoryArticles.length;
 
-      const config = categoryConfig[name] || {
-        displayName: name,
-        description: 'このカテゴリの記事一覧です。',
-        icon: '📚'
-      };
+      const config = await getCategoryMetadata(name);
 
       categories.push({
         name,
         displayName: config.displayName,
         description: config.description,
-        articleCount,
-        icon: config.icon
+        articleCount
       });
     }
   }
@@ -136,18 +127,16 @@ export default async function HomePage() {
     <main>
       {/* ヒーローセクション */}
       <section className="hero-section">
-        <h1 className="hero-title">Tech Memo</h1>
+        <h1 className="hero-title">{siteConfig.hero.title}</h1>
         <p className="hero-description">
-          技術的な知見とインサイトを共有する、プロフェッショナルなメモブログです。
-          最新の技術トレンドから実践的なプログラミングテクニックまで、
-          エンジニアに役立つ情報をお届けします。
+          {siteConfig.hero.description}
         </p>
       </section>
 
       {/* 最新記事セクション */}
       {latestArticles.length > 0 && (
         <section className="latest-articles-section">
-          <h2 className="section-title">最新の記事</h2>
+          <h2 className="section-title">{siteConfig.sections.latestArticles}</h2>
           <div className="latest-articles-grid">
             {latestArticles.map((article) => (
               <Link
@@ -170,7 +159,7 @@ export default async function HomePage() {
                   </p>
                 )}
                 <div className="latest-article-link">
-                  記事を読む →
+                  {siteConfig.ui.readMore}
                 </div>
               </Link>
             ))}
@@ -180,7 +169,7 @@ export default async function HomePage() {
 
       {/* カテゴリグリッド */}
       <section className="categories-section">
-        <h2 className="section-title">カテゴリ一覧</h2>
+        <h2 className="section-title">{siteConfig.sections.categories}</h2>
         <div className="categories-grid">
           {categories.map((category) => (
             <Link
@@ -189,14 +178,13 @@ export default async function HomePage() {
               className="category-card"
             >
               <h3>
-                <span>{category.icon}</span>
                 {category.displayName}
               </h3>
               <p>{category.description}</p>
               <div className="category-stats">
-                <span>{category.articleCount}件の記事</span>
+                <span>{siteConfig.ui.articleCount(category.articleCount)}</span>
                 <span className="category-link">
-                  記事を見る →
+                  {siteConfig.ui.readMore}
                 </span>
               </div>
             </Link>
