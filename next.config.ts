@@ -9,9 +9,7 @@ const nextConfig: NextConfig = {
       unoptimized: true
     }
   }),
-  // GitHub Pages用設定（リポジトリ名がサブパスになる場合）
-  // basePath: '/memo',
-  // assetPrefix: '/memo/',
+  // 独自ドメインを使用する場合、basePathやassetPrefixは不要
 };
 
 export default nextConfig;
