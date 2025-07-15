@@ -1,7 +1,19 @@
 import Link from 'next/link';
 import fs from 'fs/promises';
 import path from 'path';
+import matter from 'gray-matter';
 import type { Metadata, Viewport } from 'next';
+
+// 記事の型定義
+type Article = {
+  category: string;
+  categoryDisplayName: string;
+  article: string;
+  title: string;
+  date: string;
+  description?: string;
+  href: string;
+};
 
 export default async function HomePage() {
   const contentPath = path.join(process.cwd(), 'content');
@@ -33,14 +45,15 @@ export default async function HomePage() {
     }
   };
 
+  // 最新記事を取得
+  const allArticles: Article[] = [];
+
   for (const name of names) {
     const categoryPath = path.join(contentPath, name);
     const stat = await fs.stat(categoryPath);
     
     if (stat.isDirectory()) {
-      // 記事数を数える
       const articles = await fs.readdir(categoryPath);
-      let articleCount = 0;
       
       for (const article of articles) {
         const articlePath = path.join(categoryPath, article);
@@ -49,12 +62,48 @@ export default async function HomePage() {
           if (articleStat.isDirectory()) {
             const indexPath = path.join(articlePath, 'index.md');
             await fs.access(indexPath);
-            articleCount++;
+            
+            // 記事のメタデータを読み込み
+            const fileContent = await fs.readFile(indexPath, 'utf8');
+            const { data } = matter(fileContent);
+            
+            const config = categoryConfig[name] || {
+              displayName: name,
+              description: 'このカテゴリの記事一覧です。',
+              icon: '📚'
+            };
+            
+            allArticles.push({
+              category: name,
+              categoryDisplayName: config.displayName,
+              article,
+              title: data.title || article,
+              date: data.date || new Date().toISOString(),
+              description: data.description as string,
+              href: `/${encodeURIComponent(name)}/${encodeURIComponent(article)}`
+            });
           }
         } catch {
           // アクセスできないファイルはスキップ
         }
       }
+    }
+  }
+
+  // 日付でソートして最新5件を取得
+  const latestArticles = allArticles
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
+
+  // カテゴリ一覧の作成
+  for (const name of names) {
+    const categoryPath = path.join(contentPath, name);
+    const stat = await fs.stat(categoryPath);
+    
+    if (stat.isDirectory()) {
+      // 記事数を数える（既に上で処理済みの情報を再利用）
+      const categoryArticles = allArticles.filter(article => article.category === name);
+      const articleCount = categoryArticles.length;
 
       const config = categoryConfig[name] || {
         displayName: name,
@@ -72,6 +121,17 @@ export default async function HomePage() {
     }
   }
 
+  // 日付のフォーマット関数
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+    } catch {
+      return dateString;
+    }
+  };
+
   return (
     <main>
       {/* ヒーローセクション */}
@@ -84,27 +144,64 @@ export default async function HomePage() {
         </p>
       </section>
 
+      {/* 最新記事セクション */}
+      {latestArticles.length > 0 && (
+        <section className="latest-articles-section">
+          <h2 className="section-title">最新の記事</h2>
+          <div className="latest-articles-grid">
+            {latestArticles.map((article) => (
+              <Link
+                key={`${article.category}-${article.article}`}
+                href={article.href}
+                className="latest-article-card"
+              >
+                <div className="latest-article-meta">
+                  <span className="latest-article-category">
+                    {article.categoryDisplayName}
+                  </span>
+                  <time className="latest-article-date">
+                    {formatDate(article.date)}
+                  </time>
+                </div>
+                <h3 className="latest-article-title">{article.title}</h3>
+                {article.description && (
+                  <p className="latest-article-description">
+                    {article.description}
+                  </p>
+                )}
+                <div className="latest-article-link">
+                  記事を読む →
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* カテゴリグリッド */}
-      <section className="categories-grid">
-        {categories.map((category) => (
-          <Link
-            key={category.name}
-            href={`/${encodeURIComponent(category.name)}`}
-            className="category-card"
-          >
-            <h2>
-              <span>{category.icon}</span>
-              {category.displayName}
-            </h2>
-            <p>{category.description}</p>
-            <div className="category-stats">
-              <span>{category.articleCount}件の記事</span>
-              <span className="category-link">
-                記事を見る →
-              </span>
-            </div>
-          </Link>
-        ))}
+      <section className="categories-section">
+        <h2 className="section-title">カテゴリ一覧</h2>
+        <div className="categories-grid">
+          {categories.map((category) => (
+            <Link
+              key={category.name}
+              href={`/${encodeURIComponent(category.name)}`}
+              className="category-card"
+            >
+              <h3>
+                <span>{category.icon}</span>
+                {category.displayName}
+              </h3>
+              <p>{category.description}</p>
+              <div className="category-stats">
+                <span>{category.articleCount}件の記事</span>
+                <span className="category-link">
+                  記事を見る →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
     </main>
   );
