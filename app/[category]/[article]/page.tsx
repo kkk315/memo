@@ -5,11 +5,13 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import type { Metadata, Viewport } from 'next';
 import React, { Suspense } from 'react';
+import Link from 'next/link';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from '../../components/Mermaid';
 import ArticleBody from '../../components/ArticleBody';
+import styles from '../../styles/article.module.css';
 
 // 記事データ取得
 type ArticleData = {
@@ -122,27 +124,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
     htmlPages.push(<React.Fragment key={idx}>{mdx}</React.Fragment>);
   }
   return (
-    <article>
-      <header className="article-header">
-        <h1>{data.title}</h1>
-        <div className="article-meta">
-          <div className="article-meta-grid">
-            <div className="article-date">
-              📅 投稿日: {created}
-            </div>
-            <div className="article-updated">
-              🔄 更新日: {updated}
-            </div>
-          </div>
+    <main className={styles.main}>
+      <article>
+        {/* 記事コンテンツ */}
+        <div className={styles.articleContent}>
+          <Suspense fallback={<div className="loading-spinner">🔄 記事を読み込んでいます...</div>}>
+            <ArticleBody htmlPages={htmlPages} />
+          </Suspense>
         </div>
-      </header>
-      
-      <div className="article-content">
-        <Suspense fallback={<div className="loading-spinner">🔄 記事を読み込んでいます...</div>}>
-          <ArticleBody htmlPages={htmlPages} />
-        </Suspense>
-      </div>
-    </article>
+      </article>
+    </main>
   );
 }
 // SSG用: generateStaticParams

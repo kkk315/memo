@@ -1,0 +1,160 @@
+.sidebar {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  height: fit-content;
+  position: sticky;
+  top: var(--spacing-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebarTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-primary);
+  border-bottom: var(--line-width-medium) solid var(--color-primary);
+  padding-bottom: var(--spacing-xs);
+}
+
+/* プロフィールセクション */
+.profileSection {
+  margin-bottom: var(--spacing-lg);
+}
+
+.profileInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-primary);
+}
+
+.profileInfo p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* カテゴリセクション */
+.categoriesSection {
+  margin-bottom: var(--spacing-lg);
+}
+
+.categoryList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.categoryItem {
+  margin-bottom: var(--spacing-xs);
+}
+
+.categoryLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.categoryLink:hover {
+  background: var(--color-bg-blue-light);
+  color: var(--color-primary);
+  transform: translateX(4px);
+  border-radius: var(--radius-md);
+}
+
+.categoryName {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.categoryCount {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 最新記事セクション */
+.recentSection {
+  margin-bottom: 0;
+}
+
+.recentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recentItem {
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.recentItem:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.recentLink {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  transition: color 0.2s ease;
+}
+
+.recentLink:hover {
+  color: var(--color-primary);
+}
+
+.recentDate {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    margin-top: var(--spacing-lg);
+  }
+  
+  .categoriesSection,
+  .profileSection {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .recentList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .recentItem {
+    border-bottom: none;
+    padding: var(--spacing-sm);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    margin-bottom: 0;
+  }
+}

@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import Breadcrumb from "./components/Breadcrumb";
+import Sidebar from "./components/Sidebar/Sidebar";
 import { siteConfig } from "../lib/site-config";
+import styles from "./layout.module.css";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,12 +46,24 @@ export default function RootLayout({
             <Link href="/" className="site-title">
               {siteConfig.title}
             </Link>
+            <nav className="header-nav">
+              <Link href="/" className="nav-link">ホーム</Link>
+              <Link href="/categories" className="nav-link">カテゴリ</Link>
+              <Link href="/articles" className="nav-link">記事一覧</Link>
+            </nav>
           </div>
         </header>
         
-        <div className="site-container">
-          <Breadcrumb />
-          {children}
+        <div className={styles.siteContainer}>
+          <div className={styles.breadcrumbArea}>
+            <Breadcrumb />
+          </div>
+          <main className={styles.mainContentArea}>
+            {children}
+          </main>
+          <aside className={styles.sidebarArea}>
+            <Sidebar />
+          </aside>
         </div>
         
         <footer className="site-footer">

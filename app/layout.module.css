@@ -1,0 +1,52 @@
+/* サイト全体のレイアウト */
+.siteContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+.mainContentArea {
+  min-width: 0; /* グリッドでのオーバーフローを防ぐ */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.breadcrumbArea {
+  grid-column: 1 / -1; /* パンくずリストは全幅 */
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1200px) {
+  .siteContainer {
+    max-width: 1200px;
+    padding: 0 var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .siteContainer {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-sm);
+    max-width: 100%;
+  }
+  
+  .breadcrumbArea {
+    grid-column: 1;
+  }
+  
+  /* モバイルではサイドバーを下に配置 */
+  .mainContentArea {
+    order: 1;
+    padding-top: var(--spacing-lg);
+  }
+  
+  .sidebarArea {
+    order: 2;
+  }
+}

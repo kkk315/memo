@@ -5,6 +5,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '../../lib/site-config';
+import styles from '../styles/category.module.css';
 
 export default async function CategoryArticlesPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
@@ -80,47 +81,47 @@ export default async function CategoryArticlesPage({ params }: { params: Promise
   articles.sort((a, b) => (a.date < b.date ? 1 : -1));
   
   return (
-    <div>
-      {/* カテゴリヘッダー */}
-      <div className="category-header">
-        <h1>📂 {displayName}</h1>
-        <p className="category-description">
-          このカテゴリには {articles.length} 件の記事があります。
-          気になる記事をクリックして詳細をご覧ください。
-        </p>
-      </div>
-      
-      {/* 記事グリッド */}
-      <div className="articles-grid">
-        {articles.map(article => (
-          <Link 
-            key={article.name}
-            href={`/${encodeURIComponent(decodedCategory)}/${encodeURIComponent(article.name)}`}
-            className="article-card"
-          >
-            <div className="article-card-content">
-              <h3>{article.title}</h3>
-              {article.excerpt && (
-                <p>{article.excerpt}</p>
-              )}
-              {article.date && (
-                <div className="article-card-date">
-                  📅 {article.date}
-                </div>
-              )}
-              <div className="article-card-arrow">続きを読む →</div>
-            </div>
-          </Link>
-        ))}
-      </div>
-      
-      {/* バックリンク */}
-      <div className="back-link">
-        <Link href="/" className="back-button">
-          ← カテゴリ一覧へ戻る
+    <main className={styles.main}>
+      {/* ナビゲーション */}
+      <div className={styles.navigation}>
+        <Link href="/categories" className={styles.navLink}>
+          カテゴリ一覧
+        </Link>
+        <Link href="/articles" className={styles.navLink}>
+          全記事一覧
         </Link>
       </div>
-    </div>
+      
+      {/* 記事一覧 */}
+      {articles.length > 0 ? (
+        <section className={styles.articlesSection}>
+          <div className={styles.articlesGrid}>
+            {articles.map(article => (
+              <Link 
+                key={article.name}
+                href={`/${encodeURIComponent(decodedCategory)}/${encodeURIComponent(article.name)}`}
+                className={styles.articleCard}
+              >
+                <div className={styles.articleDate}>
+                  {article.date}
+                </div>
+                <h3 className={styles.articleTitle}>{article.title}</h3>
+                {article.excerpt && (
+                  <p className={styles.articleDescription}>{article.excerpt}</p>
+                )}
+                <div className={styles.articleLink}>続きを読む</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <div className={styles.emptyState}>
+          <h2>記事がありません</h2>
+          <p>このカテゴリにはまだ記事が投稿されていません。</p>
+          <Link href="/categories">他のカテゴリを見る</Link>
+        </div>
+      )}
+    </main>
   );
 }
 
