@@ -68,10 +68,13 @@ const Img: React.FC<ImgProps> = ({ src, alt, category, article }) => {
 
   let finalSrc = src;
   if (isLocal) {
+    // パラメータをデコードしてから使用
+    const decodedCategory = decodeURIComponent(category);
+    const decodedArticle = decodeURIComponent(article);
     // SSG時は /content-images/ パスを使用
     finalSrc = `/content-images/${encodeURIComponent(
-      category
-    )}/${encodeURIComponent(article)}/${encodeURIComponent(src)}`;
+      decodedCategory
+    )}/${encodeURIComponent(decodedArticle)}/${encodeURIComponent(src)}`;
   }
 
   return <img src={finalSrc} alt={alt ?? ''} />;
