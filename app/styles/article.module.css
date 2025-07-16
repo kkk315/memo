@@ -10,6 +10,106 @@
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   border: 1px solid var(--color-border-light);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-text-primary);
+}
+
+/* 見出し */
+.articleContent h1,
+.articleContent h2,
+.articleContent h3,
+.articleContent h4 {
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+  color: var(--color-text-title);
+}
+
+.articleContent h1 {
+  font-size: 2rem;
+  border-bottom: 2px solid var(--color-border-light);
+  padding-bottom: 0.5em;
+}
+
+.articleContent h2 {
+  font-size: 1.8em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.articleContent h3 {
+  font-size: 1.3rem;
+}
+
+/* 投稿日と更新日 */
+.articleMeta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* 段落 */
+.articleContent p {
+  line-height: 1.8;
+  margin-bottom: 1.5em;
+}
+
+/* リスト */
+.articleContent ul,
+.articleContent ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+  line-height: 1.8;
+}
+
+.articleContent li {
+  margin-bottom: 0.5em;
+}
+
+.articleContent li > p {
+  margin-bottom: 0.5em;
+}
+
+/* リンク */
+.articleContent a {
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-primary-light);
+}
+
+.articleContent a:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* コードブロック */
+.articleContent pre {
+  margin-bottom: 2em;
+}
+
+.articleContent :not(pre) > code {
+  background-color: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  border-radius: 6px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+}
+
+/* 区切り線 */
+.articleContent hr {
+  border: none;
+  border-top: 1px solid var(--color-border-light);
+  margin: 3em 0;
 }
 
 /* レスポンシブデザイン */
@@ -20,5 +120,18 @@
   
   .articleContent {
     padding: var(--spacing-md);
+    font-size: 0.95rem;
+  }
+
+  .articleContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .articleContent h2 {
+    font-size: 1.4rem;
+  }
+
+  .articleContent h3 {
+    font-size: 1.2rem;
   }
 }

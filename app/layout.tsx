@@ -19,12 +19,34 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// メタデータ
 export const metadata: Metadata = {
-  title: `${siteConfig.title} | 個人開発者の技術ブログ`,
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.title}`,
+  },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
-  authors: [{ name: siteConfig.author }],
-  robots: "index, follow",
+  authors: [{ name: siteConfig.author, url: 'https://github.com/kkk315' }],
+  creator: siteConfig.author,
+  publisher: siteConfig.author,
+  openGraph: {
+    type: 'website',
+    locale: 'ja_JP',
+    url: 'https://mkazu.net',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: siteConfig.title,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    creator: `@${siteConfig.author}`,
+  },
+  alternates: {
+    canonical: 'https://mkazu.net',
+  },
 };
 
 export const viewport: Viewport = {

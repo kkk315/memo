@@ -138,18 +138,18 @@ export default async function ArticlesPage() {
 
 // メタデータ
 export const metadata: Metadata = {
-  title: '全記事一覧 | Tech Blog',
-  description: '技術ブログの全記事を最新順で表示しています。プログラミング、開発ツール、ベストプラクティスなど、様々な技術記事をご覧いただけます。',
-  keywords: ['記事一覧', '技術ブログ', 'プログラミング', '開発', 'テクノロジー'],
+  title: '全記事一覧',
+  description: `技術ブログの全記事を最新順で表示しています。${siteConfig.description}`,
+  keywords: ['記事一覧', ...siteConfig.keywords],
   openGraph: {
-    title: '全記事一覧 | Tech Blog',
-    description: '技術ブログの全記事を最新順で表示しています。',
+    title: `全記事一覧 | ${siteConfig.title}`,
+    description: `技術ブログの全記事を最新順で表示しています。${siteConfig.description}`,
     type: 'website',
     locale: 'ja_JP',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '全記事一覧 | Tech Blog',
-    description: '技術ブログの全記事を最新順で表示しています。',
+    title: `全記事一覧 | ${siteConfig.title}`,
+    description: `技術ブログの全記事を最新順で表示しています。${siteConfig.description}`,
   },
 };

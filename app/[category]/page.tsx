@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import fs from 'fs/promises';
 import path from 'path';
@@ -133,7 +132,7 @@ export async function generateMetadata({
   };
   
   const displayName = categoryDisplayNames[decodedCategory] || decodedCategory;
-  const title = `${displayName} | Tech Blog`;
+  const title = `${displayName}`;
   const description = `${displayName}の技術記事一覧`;
   
   return {

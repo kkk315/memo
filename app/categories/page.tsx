@@ -151,18 +151,18 @@ export default async function CategoriesPage() {
 
 // メタデータ
 export const metadata: Metadata = {
-  title: 'カテゴリ一覧 | Tech Blog',
-  description: '技術ブログのカテゴリ一覧ページです。プログラミング、開発ツール、フレームワークなど、様々な技術分野の記事をカテゴリ別でご覧いただけます。',
-  keywords: ['カテゴリ一覧', '技術分野', 'プログラミング', '開発', 'テクノロジー'],
+  title: `カテゴリ一覧 | ${siteConfig.title}`,
+  description: `技術ブログのカテゴリ一覧ページです。${siteConfig.description}`,
+  keywords: ['カテゴリ', ...siteConfig.keywords],
   openGraph: {
-    title: 'カテゴリ一覧 | Tech Blog',
-    description: '技術ブログのカテゴリ一覧ページです。様々な技術分野の記事をカテゴリ別でご覧いただけます。',
+    title: `カテゴリ一覧 | ${siteConfig.title}`,
+    description: `技術ブログのカテゴリ一覧ページです。${siteConfig.description}`,
     type: 'website',
     locale: 'ja_JP',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'カテゴリ一覧 | Tech Blog',
-    description: '技術ブログのカテゴリ一覧ページです。',
+    title: `カテゴリ一覧 | ${siteConfig.title}`,
+    description: `技術ブログのカテゴリ一覧ページです。${siteConfig.description}`,
   },
 };
