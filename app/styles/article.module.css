@@ -30,11 +30,13 @@
 .articleContent h1 {
   font-size: 2rem;
   border-bottom: 2px solid var(--color-border-light);
-  padding-bottom: 0.5em;
+  border-left: 2rem solid var(--color-border-light);
+  padding-left: 1rem;
+  padding-bottom: 0.2em;
 }
 
 .articleContent h2 {
-  font-size: 1.8em;
+  font-size: 1.3em;
   margin-top: 2em;
   margin-bottom: 1em;
   padding-bottom: 0.5em;

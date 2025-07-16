@@ -11,6 +11,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from '../../components/Mermaid';
 import ArticleBody from '../../components/ArticleBody';
+import ImageModal from '../../components/ImageModal';
 import styles from '../../styles/article.module.css';
 
 // 1. 新しいPreコンポーネントを定義
@@ -61,25 +62,6 @@ const getArticle = async (category: string, article: string): Promise<ArticleDat
   return { content, data };
 };
 
-// 画像タグを静的パスに変換するコンポーネント
-type ImgProps = { src: string; alt?: string; category: string; article: string };
-const Img: React.FC<ImgProps> = ({ src, alt, category, article }) => {
-  const isLocal = src && !src.startsWith('http') && !src.startsWith('/');
-
-  let finalSrc = src;
-  if (isLocal) {
-    // パラメータをデコードしてから使用
-    const decodedCategory = decodeURIComponent(category);
-    const decodedArticle = decodeURIComponent(article);
-    // SSG時は /content-images/ パスを使用
-    finalSrc = `/content-images/${encodeURIComponent(
-      decodedCategory
-    )}/${encodeURIComponent(decodedArticle)}/${encodeURIComponent(src)}`;
-  }
-
-  return <img src={finalSrc} alt={alt ?? ''} />;
-};
-
 // Mermaid用コンポーネント
 function getComponents(
   category: string,
@@ -89,7 +71,7 @@ function getComponents(
   const components = {
     pre: Pre, // preのみマッピング
     mermaid: Mermaid,
-    img: (props: { src: string; alt?: string }) => <Img {...props} category={category} article={article} />,
+    img: (props: { src: string; alt?: string }) => <ImageModal {...props} category={category} article={article} />,
   };
   return components;
 }
