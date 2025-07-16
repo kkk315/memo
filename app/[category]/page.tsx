@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import type { Metadata, Viewport } from 'next';
-import { siteConfig } from '../../lib/site-config';
 import styles from '../styles/category.module.css';
 
 export default async function CategoryArticlesPage({ params }: { params: Promise<{ category: string }> }) {
@@ -13,27 +12,6 @@ export default async function CategoryArticlesPage({ params }: { params: Promise
   const categoryPath = path.join(process.cwd(), 'content', decodedCategory);
   const names = await fs.readdir(categoryPath);
   const articles: { name: string; title: string; date: string; excerpt?: string }[] = [];
-  
-  // カテゴリのメタデータを読み込む
-  const getCategoryMetadata = async (categoryName: string) => {
-    const metadataPath = path.join(process.cwd(), 'content', categoryName, 'metadata.md');
-    try {
-      const metadataContent = await fs.readFile(metadataPath, 'utf8');
-      const { data } = matter(metadataContent);
-      return {
-        displayName: categoryName,
-        description: data.description || siteConfig.ui.defaultCategoryDescription
-      };
-    } catch {
-      return {
-        displayName: categoryName,
-        description: siteConfig.ui.defaultCategoryDescription
-      };
-    }
-  };
-  
-  const categoryMeta = await getCategoryMetadata(decodedCategory);
-  const displayName = categoryMeta.displayName;
   
   // 日付フォーマット関数
   function formatDateForCard(dateValue?: string): string {

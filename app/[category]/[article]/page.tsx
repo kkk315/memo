@@ -5,7 +5,6 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import type { Metadata, Viewport } from 'next';
 import React, { Suspense } from 'react';
-import Link from 'next/link';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
