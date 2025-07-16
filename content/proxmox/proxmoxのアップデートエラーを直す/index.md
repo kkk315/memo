@@ -6,7 +6,6 @@ date: 2025-07-16
 ![alt text](image.png)
 
 > TASK ERROR: command 'apt-get update' failed: exit code 100
-
 これが出る原因ですが、有料サブスクリプションがないにも関わらず、有料サブスクリプション向けのリポジトリを含めてアップデートをかけようとしているからでした。
 
 以下の設定でエラーが出ているので、この記述を無効にしていきます。
@@ -18,7 +17,7 @@ deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
 ``/etc/apt/sources.list``及び``/etc/apt/sources.list.d/``内に件の設定がどこかしらにあるため、それらをコメントアウトまたは削除します。
 
 まずは基本の設定ファイルから。
-nanoなりviなりvimなりで``/etc/apt/sources.list``を開き、以下のようにコメントアウトしておきます。
+nanoなりviなりで``/etc/apt/sources.list``を開き、以下のようにコメントアウトしておきます。
 (面倒なのでwebUIのシェルからrootでやっていますが、一般ユーザーでやる場合はsudoが必要かも)
 
 ```bash
@@ -33,7 +32,9 @@ deb http://security.debian.org bookworm-security main contrib
 deb http://ftp.debian.org/debian bookworm-backports main contrib
 deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
 #deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise ←こいつをコメントアウト
+a
 ```
+
 
 次に``/etc/apt/sources.list.d/``ですが、こちらはディレクトリなので、まずはどんなファイルがあるか確認します。
 
