@@ -75,7 +75,7 @@ python                                      https://github.com/danhper/asdf-pyth
 プラグインを追加：
 
 ```bash
-$ asdf plugin-add nodejs
+$ asdf plugin add nodejs
 ```
 
 プラグイン一覧表示：
@@ -108,5 +108,3 @@ $ asdf set global nodejs 20.15.1 # このディレクトリとそれ以下の全
 これで`.tool-versions`というファイルができて、設定に応じたスコープでバージョン管理が有効になります。
 
 globalとlocalを同時に指定した場合はエラーが出るので注意しましょう。
-
-最近はほとんどAIエージェントにコーディングもコマンド実行もさせていますが、特にPythonの場合は新規ターミナルを開きまくってvenvを使おうとしない、poetryを使えと言ってもしばらくすると`python`コマンドを打つ、というか環境ごとに`python`だったり`python3`だったりでいちいち間違わせるのが面倒くさいことこの上なかったので、asdfには期待しています。aから右に4文字も打ちやすいし覚えやすくて良いですね。
