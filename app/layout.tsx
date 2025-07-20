@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import { siteConfig } from "../lib/site-config";
 import styles from "./layout.module.css";
 import "./globals.css";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -63,6 +64,23 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
+        {/* Google Analytics（gtag.js） */}
+        {siteConfig.googleAnalyticsId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${siteConfig.googleAnalyticsId}');
+              `}
+            </Script>
+          </>
+        )}
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="site-title">

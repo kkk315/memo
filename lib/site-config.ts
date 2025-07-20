@@ -4,6 +4,8 @@ export const siteConfig = {
   title: 'mkazu.net',
   author: 'mkazu',
   description: '個人の技術ブログ。Web技術やプログラミングに関する知見を共有します。',
+  // Google Analytics（GA4）トラッキングID（例: G-XXXXXXXXXX）
+  googleAnalyticsId: 'G-RKJ7E7VJ1N',
   
   // メタデータ
   keywords: ['技術ブログ', 'プログラミング', '開発', 'エンジニアリング', 'Web開発', 'ソフトウェア'],
