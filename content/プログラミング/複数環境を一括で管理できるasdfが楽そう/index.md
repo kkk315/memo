@@ -102,7 +102,7 @@ $ asdf install nodejs latest
 ディレクトリ単位でバージョンを指定します：
 ```bash
 $ asdf set nodejs 20.15.1 # このディレクトリのみ有効
-$ asdf set -u nodejs 20.15.1 # 全てのディレクトリで有効
+$ asdf set -u nodejs 20.15.1 # 全てのディレクトリで有効(ユーザーのホームディレクトリに.tool-versionsが作成されます)
 ```
 
 これで`.tool-versions`というファイルができて、設定に応じたスコープでバージョン管理が有効になります。
