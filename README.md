@@ -1,27 +1,24 @@
-# mkazu 技術メモ
 
-Next.js 15 App Router を使用したSSG対応Markdownブログサイトです。
+# mkazu.net
 
-## 機能
+個人開発・インフラ・ネットワーク・プログラミング・自宅サーバー運用・ツール活用など、日々の技術的な気づきやノウハウ、実践記録をまとめたブログです。
+本体→http://blog.mkazu.net
+## このブログで読めること
 
-- 📝 Markdownファイルから静的サイト生成
-- 🎨 Mermaidグラフの埋め込み対応
-- 🖼️ 画像の自動配信（API Route経由）
-- 🌏 日本語カテゴリ・記事名対応
-- 📄 ページネーション機能
-- 🍞 パンくずリスト
-- 💻 シンタックスハイライト（Prism.js）
-- 🔧 TypeScript + ESLint設定
+- 個人開発や自作ツールの実践メモ
+- Linux・サーバー・ネットワーク構築のトラブルシュートやTips
+- Next.jsやTypeScriptなどWeb技術の導入・運用ノウハウ
+- asdfやGitなど開発環境の管理・自動化の工夫
+- 自宅ラボ・仮想化・Proxmoxなどの構築記録
+- 日々の作業効率化や便利ツールの紹介
 
-## 技術スタック
+技術的な検証・失敗談・運用のリアルな知見を中心に、備忘録も兼ねて幅広く発信しています。
 
-- **Framework**: Next.js 15.3.5 (App Router)
-- **Language**: TypeScript
-- **Styling**: CSS
-- **Markdown**: gray-matter + next-mdx-remote
-- **Code Highlight**: react-syntax-highlighter
-- **Graphs**: Mermaid.js
-- **Deployment**: GitHub Actions + GitHub Pages
+記事はカテゴリごとに整理されており、日本語のカテゴリ名や記事名にも対応しています。
+
+---
+
+
 
 ## Getting Started
 
@@ -70,9 +67,8 @@ content/
 
 ```markdown
 ---
-title: "記事タイトル"
-date: "2025-01-01"
-update: "2025-01-02"
+date: "2025-01-01"（必須）
+update: "2025-01-02"（あれば）
 ---
 
 記事の内容...
